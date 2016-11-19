@@ -1,0 +1,11 @@
+*.pyc
+*.class
+*~
+*.pickle
+*.orig
+.nfs*
+.project
+.pydevproject
+*.cookie.txt
+/stamps/
+/tgz/
