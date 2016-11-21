@@ -12,7 +12,7 @@ endif
 
 #############################
 PYTHON.PACKAGES = $(foreach subdir,* */* */*/* */*/*/*,$(patsubst %/__init__.py,%,$(wildcard $(subdir)/__init__.py)))
-PYTHON.SRC := $(wildcard *.py) $(foreach pkg,$(PYTHON_PACKAGES),$(wildcard $(pkg)/*.py))
+PYTHON.SRC := $(wildcard *.py) $(foreach pkg,$(PYTHON.PACKAGES),$(wildcard $(pkg)/*.py))
 ifeq ($(PYTHON.MAIN),)
 PYTHON.MAIN := $(wildcard *.py)
 endif
@@ -30,6 +30,7 @@ PYTHON.UNITTEST_STAMPS := $(strip \
 	$(filter-out %__init__.py,\
 	$(PYTHON.SRC)\
 	)))
+
 
 .PHONY: check
 check: $(PYTHON.UNITTEST_STAMPS)
