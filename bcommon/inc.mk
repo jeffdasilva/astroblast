@@ -7,17 +7,92 @@
 
 
 #############################
+THIS_INC_MK_MAKEFILE :=  $(abspath $(lastword $(MAKEFILE_LIST)))
+THIS_INC_MK_DIR := $(patsubst %/,%,$(dir $(THIS_INC_MK_MAKEFILE)))
+
 SHELL := /bin/bash
 .SECONDEXPANSION:
 
 SPACE := $(empty) $(empty)
 
+define tolower
+$(strip \
+$(subst A,a,\
+$(subst B,b,\
+$(subst C,c,\
+$(subst D,d,\
+$(subst E,e,\
+$(subst F,f,\
+$(subst G,g,\
+$(subst H,h,\
+$(subst I,i,\
+$(subst J,j,\
+$(subst K,k,\
+$(subst L,l,\
+$(subst M,m,\
+$(subst N,n,\
+$(subst O,o,\
+$(subst P,p,\
+$(subst Q,q,\
+$(subst R,r,\
+$(subst S,s,\
+$(subst T,t,\
+$(subst U,u,\
+$(subst V,v,\
+$(subst W,w,\
+$(subst X,x,\
+$(subst Y,y,\
+$(subst Z,z,\
+$1 \
+)))))))))))))))))))))))))))
+endef
+
+define toupper
+$(strip \
+$(subst a,A,\
+$(subst b,B,\
+$(subst c,C,\
+$(subst d,D,\
+$(subst e,E,\
+$(subst f,F,\
+$(subst g,G,\
+$(subst h,H,\
+$(subst i,I,\
+$(subst j,J,\
+$(subst k,K,\
+$(subst l,L,\
+$(subst m,M,\
+$(subst n,N,\
+$(subst o,O,\
+$(subst p,P,\
+$(subst q,Q,\
+$(subst r,R,\
+$(subst s,S,\
+$(subst t,T,\
+$(subst u,U,\
+$(subst v,V,\
+$(subst w,W,\
+$(subst x,X,\
+$(subst y,Y,\
+$(subst z,Z,\
+$1 \
+)))))))))))))))))))))))))))
+endef
+
+HOST_OS := $(call tolower,$(shell uname -o 2>/dev/null))
+ifeq ($(HOST_OS),msys)
+IS_WINDOWS_HOST_OS := 1
+endif
+ifeq ($(HOST_OS),cygwin)
+IS_WINDOWS_HOST_OS := 1
+endif
+#############################
+
+
+#############################
 .PHONY: default
 default: $(if $(DEFAULT_TARGET),$(DEFAULT_TARGET),check)
-#############################
 
-
-#############################
 .PHONY: all
 .PHONY: check
 .PHONY: run
@@ -25,6 +100,13 @@ default: $(if $(DEFAULT_TARGET),$(DEFAULT_TARGET),check)
 
 check: all
 test: check
+#############################
+
+
+#############################
+PLUGINS_AVAILABLE := $(filter-out inc,$(patsubst $(THIS_INC_MK_DIR)/%.mk,%,$(wildcard $(THIS_INC_MK_DIR)/*.mk)))
+PLUGINS_ENABLED := $(foreach plugin,$(PLUGINS_AVAILABLE),$(if $(ENABLE_$(call toupper,$(plugin))),$(plugin)))
+include $(patsubst %,$(THIS_INC_MK_DIR)/%.mk,$(PLUGINS_ENABLED))
 #############################
 
 
@@ -43,8 +125,13 @@ ifeq ($(shell which dos2unix 2>/dev/null),)
 	$(warning WARNING: dos2unix not installed)
 	@sleep 2
 else 
+ifeq ($(IS_WINDOWS_HOST_OS),1)
+	@find . -type f \( -name '*.py' -o -name 'Makefile' -o -name '*.mk' \) \
+		-exec dos2unix {} \;
+else
 	@find . -type f \( -name '*.py' -o -name 'Makefile' -o -name '*.mk' -o -name '*.md' -o -name 'LICENSE' \) \
 		-exec dos2unix {} \;
+endif
 endif
 
 .PHONY: lint
