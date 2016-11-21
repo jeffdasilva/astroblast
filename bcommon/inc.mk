@@ -126,7 +126,7 @@ ifeq ($(shell which dos2unix 2>/dev/null),)
 	$(warning WARNING: dos2unix not installed)
 	@sleep 2
 else 
-	@find . -type f \( -name '*.py' -o -name 'Makefile' -o -name '*.mk' -o -name '*.md' -o -name 'LICENSE' \) \
+	find . -type f \( -name '*.py' -o -name 'Makefile' -o -name '*.mk' -o -name '*.md' -o -name 'LICENSE' \) \
 		-exec dos2unix {} \;
 endif
 endif
