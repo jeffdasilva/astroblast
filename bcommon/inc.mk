@@ -121,14 +121,11 @@ remove-trailing-whitespace:
 
 .PHONY: remove-windows-line-endings
 remove-windows-line-endings:
+ifneq ($(IS_WINDOWS_HOST_OS),1)
 ifeq ($(shell which dos2unix 2>/dev/null),)
 	$(warning WARNING: dos2unix not installed)
 	@sleep 2
 else 
-ifeq ($(IS_WINDOWS_HOST_OS),1)
-	@find . -type f \( -name '*.py' -o -name 'Makefile' -o -name '*.mk' \) \
-		-exec dos2unix {} \;
-else
 	@find . -type f \( -name '*.py' -o -name 'Makefile' -o -name '*.mk' -o -name '*.md' -o -name 'LICENSE' \) \
 		-exec dos2unix {} \;
 endif
@@ -167,7 +164,7 @@ endif
 #############################
 CLEAN_FILES_RE += *.pyc *.class stamps test*.pickle *.orig *~ *.png
 CLEAN_FILES += $(sort $(wildcard $(strip \
-	$(foreach dir,. $(PYTHON_PACKAGES),\
+	$(foreach dir,. $(PYTHON.PACKAGES),\
 	$(foreach clean_re,$(CLEAN_FILES_RE), \
 		$(dir)/$(clean_re) \
 )))))

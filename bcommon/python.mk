@@ -13,7 +13,13 @@ endif
 #############################
 PYTHON.PACKAGES = $(foreach subdir,* */* */*/* */*/*/*,$(patsubst %/__init__.py,%,$(wildcard $(subdir)/__init__.py)))
 PYTHON.SRC := $(wildcard *.py) $(foreach pkg,$(PYTHON_PACKAGES),$(wildcard $(pkg)/*.py))
+ifeq ($(PYTHON.MAIN),)
 PYTHON.MAIN := $(wildcard *.py)
+endif
+
+ifneq ($(words $(PYTHON.MAIN)),1)
+$(error ERROR: PYTHON.MAIN is not valid '$(PYTHON.MAIN)')
+endif
 #############################
 
 
