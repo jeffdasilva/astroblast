@@ -5,7 +5,8 @@
 #
 ###############################################################################
 
-ENABLE_GIT := 1
-ENABLE_PYTHON := 1
+ifeq ($(DEBUG),1)
+$(info git.mk included)
+endif
 
-include bcommon/inc.mk
+GIT.PUSH_DEPS = increment-minor-version
