@@ -126,7 +126,7 @@ ifeq ($(shell which dos2unix 2>/dev/null),)
 	$(warning WARNING: dos2unix not installed)
 	@sleep 2
 else 
-	find . -type f \( -name '*.py' -o -name 'Makefile' -o -name '*.mk' -o -name '*.md' -o -name 'LICENSE' \) \
+	@find . -type f \( -name '*.py' -o -name 'Makefile' -o -name '*.mk' -o -name '*.md' -o -name 'LICENSE' \) \
 		-exec dos2unix {} \;
 endif
 endif
@@ -139,24 +139,24 @@ lint: increment-build-number remove-trailing-whitespace remove-windows-line-endi
 
 
 #############################
-CURRENT_BUILD_NUMBER = $(shell grep "BuildNumber = [0-9]*$$" $(PYTHON_MAIN) | head -n1 | sed -e 's,.*=[ \t]*,,g')
+CURRENT_BUILD_NUMBER = $(shell grep "BuildNumber = [0-9]*$$" $(PYTHON.MAIN) | head -n1 | sed -e 's,.*=[ \t]*,,g')
 NEXT_BUILD_NUMBER = $(shell echo $$[$(CURRENT_BUILD_NUMBER)+1])
 
 .PHONY: increment-build-number
 increment-build-number:
-ifeq ($(shell whoami),jdasilva)
+ifeq ($(notdir $(shell whoami)),jdasilva)
 	@echo "Incrementing build number to: $(NEXT_BUILD_NUMBER)"
-	@sed -i -e 's,\(BuildNumber = \)\([0-9]*\)$$,\1$(NEXT_BUILD_NUMBER),g' $(PYTHON_MAIN)
+	@sed -i -e 's,\(BuildNumber = \)\([0-9]*\)$$,\1$(NEXT_BUILD_NUMBER),g' $(PYTHON.MAIN)
 endif
 
-CURRENT_MINOR_VERSION_NUMBER = $(shell grep "MinorVersion = [0-9]*$$" $(PYTHON_MAIN) | head -n1 | sed -e 's,.*=[ \t]*,,g')
+CURRENT_MINOR_VERSION_NUMBER = $(shell grep "MinorVersion = [0-9]*$$" $(PYTHON.MAIN) | head -n1 | sed -e 's,.*=[ \t]*,,g')
 NEXT_MINOR_VERSION_NUMBER = $(shell echo $$[$(CURRENT_MINOR_VERSION_NUMBER)+1])
 
 .PHONY: increment-minor-version
 increment-minor-version:
-ifeq ($(shell whoami),jdasilva)
+ifeq ($(notdir $(shell whoami)),jdasilva)
 	@echo "Incrementing minor version number to: $(NEXT_MINOR_VERSION_NUMBER)"
-	@sed -i -e 's,\(MinorVersion = \)\([0-9]*\)$$,\1$(NEXT_MINOR_VERSION_NUMBER),g' $(PYTHON_MAIN)
+	@sed -i -e 's,\(MinorVersion = \)\([0-9]*\)$$,\1$(NEXT_MINOR_VERSION_NUMBER),g' $(PYTHON.MAIN)
 endif
 #############################
 
