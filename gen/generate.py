@@ -7,6 +7,7 @@ import unittest
 class Generator(object):
 
     def __init__(self):
+        self.parent_generator = None
         self.text = None
         self.snr = []
 
@@ -15,6 +16,12 @@ class Generator(object):
         return dir_path + os.sep + "templates"
 
     def append(self, text):
+
+        if text is None:
+            raise ValueError('text input to append is None')
+
+        if isinstance(text, Generator):
+            text.parent_generator = self
 
         if self.text is None:
             self.text = text
@@ -28,6 +35,10 @@ class Generator(object):
 
         if not isinstance(self.text, (list,tuple)):
             self.text = [ self.text ]
+        else:
+            for ele in text:
+                if isinstance(ele, Generator):
+                    ele.parent_generator = self
 
         self.text = self.text + text
 
@@ -42,8 +53,14 @@ class Generator(object):
 
         self.append(text)
 
+    def get_snr(self):
+        if self.parent_generator is not None:
+            return self.parent_generator.get_snr() + self.snr
+        else:
+            return self.snr
+
     def generate_string(self, text):
-        for regex_tuple in self.snr:
+        for regex_tuple in self.get_snr():
             text = re.sub(regex_tuple[0],regex_tuple[1],text)
         return text
 
@@ -140,6 +157,12 @@ DONE.
         cg.append("I am the child generator\n")
         pg.append(cg)
         self.assertEqual(pg.generate(),"I am the parent generator\nI am the child generator\n")
+
+        pg.snr.append(('generator', 'gener8r'))
+        cg.snr.append(('gener8r', 'XGen'))
+        self.assertEqual(pg.generate(),"I am the parent gener8r\nI am the child XGen\n")
+
+
 
 if __name__ == "__main__":
     unittest.main()

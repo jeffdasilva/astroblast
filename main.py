@@ -3,7 +3,7 @@
 class AstroBlast(object):
     AstroBlastMajorVersion = 0
     AstroBlastMinorVersion = 1
-    AstroBlastBuildNumber = 5
+    AstroBlastBuildNumber = 7
 
 
 if __name__ == '__main__':

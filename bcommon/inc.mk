@@ -5,12 +5,14 @@
 #
 ###############################################################################
 
+ifeq ($(DEBUG),1)
+$(info inc.mk included)
+endif
 
 #############################
 THIS_INC_MK_MAKEFILE :=  $(abspath $(lastword $(MAKEFILE_LIST)))
 THIS_INC_MK_DIR := $(patsubst %/,%,$(dir $(THIS_INC_MK_MAKEFILE)))
 
-SHELL := /bin/bash
 .SECONDEXPANSION:
 
 SPACE := $(empty) $(empty)
@@ -79,7 +81,8 @@ $1 \
 )))))))))))))))))))))))))))
 endef
 
-HOST_OS := $(call tolower,$(shell uname -o 2>/dev/null))
+HOST_OS := $(call tolower,$(shell uname -o))
+
 ifeq ($(HOST_OS),msys)
 IS_WINDOWS_HOST_OS := 1
 endif
@@ -167,11 +170,13 @@ CLEAN_FILES += $(sort $(wildcard $(strip \
 	$(foreach dir,. $(PYTHON.PACKAGES),\
 	$(foreach clean_re,$(CLEAN_FILES_RE), \
 		$(dir)/$(clean_re) \
-)))))
+)))) \
+$(wildcard work) \
+)
 
 .PHONY: clean
 clean:
-	$(if $(CLEAN_FILES),rm -rf $(CLEAN_FILES))
+	$(if $(strip $(CLEAN_FILES)),rm -rf $(CLEAN_FILES))
 
 TARBALL_TIMESTAMP := $(strip $(subst $(SPACE),,$(shell date +%m%d%Y_%k%M%S)))
 TARBALL_FILE := tgz/$(notdir $(abspath .))_$(TARBALL_TIMESTAMP).tar.gz

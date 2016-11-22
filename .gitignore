@@ -1,5 +1,6 @@
 *.pyc
 *.class
+*.tmp
 *~
 *.pickle
 *.orig
@@ -9,3 +10,4 @@
 *.cookie.txt
 /stamps/
 /tgz/
+/work/
