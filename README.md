@@ -1,2 +1,2 @@
-# astroblast
-astroblast is currently a blank canvas searching for some paint.
+# AstroBlast
+AstroBlast was a blank canvas searching for some paint.
