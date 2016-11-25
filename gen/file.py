@@ -116,3 +116,7 @@ class TestFileGenerator(unittest.TestCase):
         fg.append_template("test/mock.txt")
         fg.generate()
         self.assertEquals(fg.generate(), False)
+
+
+if __name__ == "__main__":
+    unittest.main()

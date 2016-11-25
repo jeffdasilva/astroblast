@@ -14,6 +14,7 @@ THIS_INC_MK_MAKEFILE :=  $(abspath $(lastword $(MAKEFILE_LIST)))
 THIS_INC_MK_DIR := $(patsubst %/,%,$(dir $(THIS_INC_MK_MAKEFILE)))
 
 .SECONDEXPANSION:
+SHELL := /bin/bash
 
 SPACE := $(empty) $(empty)
 
@@ -81,13 +82,23 @@ $1 \
 )))))))))))))))))))))))))))
 endef
 
-HOST_OS := $(call tolower,$(shell uname -o))
+ifneq ($(COMSPEC),)
+UNAME_O := Msys
+else
+UNAME_O := $(shell uname -o)
+endif
+
+HOST_OS := $(call tolower,$(UNAME_O))
 
 ifeq ($(HOST_OS),msys)
 IS_WINDOWS_HOST_OS := 1
 endif
 ifeq ($(HOST_OS),cygwin)
 IS_WINDOWS_HOST_OS := 1
+endif
+
+ifeq ($(DEBUG),1)
+$(info HOST_OS is $(HOST_OS))
 endif
 #############################
 

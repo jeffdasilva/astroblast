@@ -21,6 +21,8 @@ class Generator(object):
             raise ValueError('text input to append is None')
 
         if isinstance(text, Generator):
+            if text.parent_generator is not None:
+                raise ValueError('Generator being added already has a parent generator')
             text.parent_generator = self
 
         if self.text is None:
