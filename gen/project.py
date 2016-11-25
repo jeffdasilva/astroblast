@@ -30,10 +30,14 @@ class ProjectGenerator(FileGenerator):
 
     def generate(self):
 
-        for f in self.files:
-            f.generate()
+        generation_occured = False
 
-        FileGenerator.generate(self)
+        for f in self.files:
+            generation_occured |= f.generate()
+
+        generation_occured |= FileGenerator.generate(self)
+
+        return generation_occured
 
 ###############################################################################
 #
@@ -78,6 +82,24 @@ class TestProjectGenerator(unittest.TestCase):
         self.assertEqual(len(pg.files),2)
 
 
+    def testGenerate(self):
+        pg = ProjectGenerator()
+        foo = FileGenerator("foo.tmp")
+        bar = FileGenerator("bar.tmp")
+        pg.append_file(foo)
+        pg.append_file(bar)
+        pg.output_dir = self.test_root_dir + '/proj1'
+
+        pg.generate()
+        self.assertFalse(pg.generate())
+
+        foo.append_template("test/mock.txt")
+        self.assertTrue(pg.generate())
+        self.assertFalse(pg.generate())
+
+        pg.snr.append(('<add stuff here>',"astroblast!"))
+        self.assertTrue(pg.generate())
+        self.assertFalse(pg.generate())
 
 if __name__ == "__main__":
     unittest.main()
