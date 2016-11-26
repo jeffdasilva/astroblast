@@ -146,11 +146,11 @@ endif
 endif
 
 .PHONY: lint
-lint: increment-build-number remove-trailing-whitespace remove-windows-line-endings tabs2space
+#lint: increment-build-number
+lint: remove-trailing-whitespace remove-windows-line-endings tabs2space
 	$(MAKE) check
 	$(MAKE) clean
 #############################
-
 
 #############################
 CURRENT_BUILD_NUMBER = $(shell grep "BuildNumber = [0-9]*$$" $(PYTHON.MAIN) | head -n1 | sed -e 's,.*=[ \t]*,,g')
@@ -173,7 +173,6 @@ ifeq ($(notdir $(shell whoami)),jdasilva)
 	@sed -i -e 's,\(MinorVersion = \)\([0-9]*\)$$,\1$(NEXT_MINOR_VERSION_NUMBER),g' $(PYTHON.MAIN)
 endif
 #############################
-
 
 #############################
 CLEAN_FILES_RE += *.pyc *.class stamps test*.pickle *.orig *~ *.png
