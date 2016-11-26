@@ -1,0 +1,5 @@
+This is mock template file used by pyunit test code
+
+<add stuff here>
+
+EOF

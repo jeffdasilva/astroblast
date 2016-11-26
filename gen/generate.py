@@ -10,10 +10,10 @@ class Generator(object):
         self.parent_generator = None
         self.text = None
         self.snr = []
+        self.template_dir = os.path.dirname(os.path.realpath(__file__)) + os.sep + "templates"
 
     def get_template_dir(self):
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        return dir_path + os.sep + "templates"
+        return self.template_dir
 
     def append(self, text):
 
