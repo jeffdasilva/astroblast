@@ -1,9 +1,12 @@
+import os
 import unittest
 
 from fpga.intel import IntelFpgaProject, IntelFpgaFile
 
 
 class QuartusProject(IntelFpgaProject):
+
+    UNKNOWN_DEVICE = "Unknown"
 
     def __init__(self, project_name, project_dir=None):
 
@@ -14,19 +17,46 @@ class QuartusProject(IntelFpgaProject):
         self.makefile.append_template("Makefile")
         self.append_file(self.makefile)
 
-        self.qsf = IntelFpgaFile(self.project_name + '_generate.tcl')
+        self.qsf = IntelFpgaFile(self.project_name + '_quartus_generate.tcl')
+        self.qsf.append_template("generate_quartus_project.tcl")
         self.append_file(self.qsf)
 
         self.sdc = IntelFpgaFile(self.project_name + '_timing_constraints.sdc')
         self.append_file(self.sdc)
 
-        self.verilog_top = IntelFpgaFile(self.project_name + '_top.v')
-        self.append_file(self.verilog_top)
+        self.top_level_entity = IntelFpgaFile(self.project_name + '_top.v')
+        self.append_file(self.top_level_entity)
 
+        self.device = None
         self.device_family = None
 
+    def get_device_family(self):
+        if self.device_family is None:
+            return QuartusProject.UNKNOWN_DEVICE
+        else:
+            return self.device_family
+
+    def get_device(self):
+        if self.device is None:
+            return QuartusProject.UNKNOWN_DEVICE
+        else:
+            return self.device
+
     def get_snr(self):
-        return super(QuartusProject, self).get_snr()
+
+        snr = []
+        snr.append(('@DEVICE_FAMILY@', self.get_device_family()))
+        snr.append(('@DEVICE@', self.get_device()))
+
+        if self.sdc is not None:
+            snr.append(('@SDC_FILE@', self.sdc.output_file))
+
+        if self.top_level_entity is not None:
+            top_level_entity_no_ext = self.top_level_entity.output_file.split('.',1)[0]
+            snr.append(('@TOP_LEVEL_ENTITY@', top_level_entity_no_ext))
+
+
+        return snr + super(QuartusProject, self).get_snr()
 
 
 ###############################################################################

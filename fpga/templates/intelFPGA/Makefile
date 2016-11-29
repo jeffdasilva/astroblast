@@ -1,5 +1,7 @@
 
 
+DEVICE_FAMILY := "@DEVICE_FAMILY@"
+
 .PHONY: all
 all:
-	echo hi
+	@echo "This is the '$@' target"
