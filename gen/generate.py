@@ -12,6 +12,13 @@ class Generator(object):
         self.snr = []
         self.template_dir = os.path.dirname(os.path.realpath(__file__)) + os.sep + "templates"
 
+    def validate(self):
+        assert(self.snr is not None)
+        assert(self.get_snr() is not None)
+
+        if self.parent_generator is not None:
+            self.parent_generator.validate()
+
     def get_template_dir(self):
         return self.template_dir
 
@@ -45,7 +52,7 @@ class Generator(object):
         self.text = self.text + text
 
     def append_template(self, template_file):
-        abs_file = self.get_template_dir() + os.sep + template_file
+        abs_file = os.path.join(self.get_template_dir(), template_file)
         if not os.path.isfile(abs_file):
             raise ValueError("Template file " + abs_file + " does not exist")
 
@@ -57,7 +64,9 @@ class Generator(object):
 
     def get_snr(self):
         if self.parent_generator is not None:
-            return self.parent_generator.get_snr() + self.snr
+            assert(self.parent_generator.snr is not None)
+            assert(self.parent_generator.get_snr() is not None)
+            return self.snr + self.parent_generator.get_snr()
         else:
             return self.snr
 
@@ -160,9 +169,13 @@ DONE.
         pg.append(cg)
         self.assertEqual(pg.generate(),"I am the parent generator\nI am the child generator\n")
 
-        pg.snr.append(('generator', 'gener8r'))
         cg.snr.append(('gener8r', 'XGen'))
-        self.assertEqual(pg.generate(),"I am the parent gener8r\nI am the child XGen\n")
+        pg.snr.append(('generator', 'gener8r'))
+        self.assertEqual(pg.generate(),"I am the parent gener8r\nI am the child gener8r\n")
+
+        cg.snr.append(("I am", "I'm"))
+        pg.snr.append(("I'm", "Im"))
+        self.assertEqual(pg.generate(),"I am the parent gener8r\nIm the child gener8r\n")
 
 
 

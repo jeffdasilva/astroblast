@@ -11,13 +11,13 @@ class IntelFpgaGenerator(Generator):
         super(IntelFpgaGenerator, self).__init__()
         self.template_dir = os.path.dirname(os.path.realpath(__file__)) + os.sep + "templates" + os.sep + "intelFPGA"
 
-class IntelFpgaFileGenerator(FileGenerator, IntelFpgaGenerator):
+class IntelFpgaFile(FileGenerator, IntelFpgaGenerator):
     def __init__(self, output_file=None):
-        super(IntelFpgaFileGenerator, self).__init__(output_file=output_file)
+        super(IntelFpgaFile, self).__init__(output_file=output_file)
 
-class IntelFpgaProjectGenerator(ProjectGenerator, IntelFpgaFileGenerator):
+class IntelFpgaProject(ProjectGenerator, IntelFpgaFile):
     def __init__(self, output_dir=None):
-        super(IntelFpgaProjectGenerator, self).__init__(output_dir=output_dir)
+        super(IntelFpgaProject, self).__init__(output_dir=output_dir)
 
 ###############################################################################
 #
@@ -25,6 +25,10 @@ class IntelFpgaProjectGenerator(ProjectGenerator, IntelFpgaFileGenerator):
 #
 
 class TestIntelFpgaGenerator(unittest.TestCase):
+
+    def setUp(self):
+        from gen.file import TestFileGenerator
+        self.test_root_dir = TestFileGenerator.get_unittest_dir(__file__, '../work/unittest.tmp/gen/project')
 
     def testConstructor(self):
 
@@ -34,17 +38,18 @@ class TestIntelFpgaGenerator(unittest.TestCase):
         self.assertNotEqual(g, None)
         self.assertEqual(g.template_dir, expected_template_dir)
 
-        fg = IntelFpgaFileGenerator()
+        fg = IntelFpgaFile()
         self.assertNotEqual(fg, None)
         self.assertEqual(fg.template_dir, expected_template_dir)
 
-        pg = IntelFpgaProjectGenerator()
+        pg = IntelFpgaProject()
         self.assertNotEqual(pg, None)
         self.assertEqual(pg.template_dir, expected_template_dir)
 
 
     def testTemplateDir(self):
 
-        fg = IntelFpgaFileGenerator()
+        fg = IntelFpgaFile()
         fg.append_template("../test/fpga_mock.txt")
         print Generator.generate(fg)
+

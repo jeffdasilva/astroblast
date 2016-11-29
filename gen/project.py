@@ -1,8 +1,6 @@
-import os
 import unittest
 
 from gen.file import FileGenerator
-
 
 class ProjectGenerator(FileGenerator):
 
@@ -47,9 +45,8 @@ class ProjectGenerator(FileGenerator):
 class TestProjectGenerator(unittest.TestCase):
 
     def setUp(self):
-        self.test_root_dir = os.path.dirname(os.path.realpath(__file__)) + os.sep + \
-            ".." + os.sep + "work" + os.sep + "unittest.tmp" + os.sep + "gen" + \
-            os.sep + "project"
+        from gen.file import TestFileGenerator
+        self.test_root_dir = TestFileGenerator.get_unittest_dir(__file__, '../work/unittest.tmp/gen/project')
 
     def testConstructor(self):
         pg = ProjectGenerator()

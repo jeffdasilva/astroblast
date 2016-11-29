@@ -39,6 +39,10 @@ class FileGenerator(Generator):
             return output_dir + os.sep + self.output_file
 
     def mkdir_p(self,path):
+
+        if path is None or path == "":
+            return
+
         try:
             os.makedirs(path)
         except OSError as exc:
@@ -81,10 +85,14 @@ class FileGenerator(Generator):
 
 class TestFileGenerator(unittest.TestCase):
 
+    @staticmethod
+    def get_unittest_dir(this_file,relative_dir):
+        this_dir = os.path.dirname(os.path.realpath(this_file))
+        test_dir = os.path.join(this_dir,relative_dir)
+        return os.path.normpath(test_dir)
+
     def setUp(self):
-        self.test_root_dir = os.path.dirname(os.path.realpath(__file__)) + os.sep + \
-            ".." + os.sep + "work" + os.sep + "unittest.tmp" + os.sep + "gen" + \
-            os.sep + "file"
+        self.test_root_dir = TestFileGenerator.get_unittest_dir(__file__, '../work/unittest.tmp/gen/file')
 
     def testConstructor(self):
         fg = FileGenerator()
