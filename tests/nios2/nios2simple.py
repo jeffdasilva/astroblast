@@ -22,6 +22,5 @@ class Nios2TestSimple(unittest.TestCase):
 
         qpf.generate()
 
-
 if __name__ == "__main__":
     unittest.main()
