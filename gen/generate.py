@@ -70,6 +70,9 @@ class Generator(object):
         else:
             return self.snr
 
+    def get_text(self):
+        return self.text
+
     def generate_string(self, text):
         for regex_tuple in self.get_snr():
             text = re.sub(regex_tuple[0],regex_tuple[1],text)
@@ -94,7 +97,7 @@ class Generator(object):
             raise ValueError('self.text type is not valid')
 
     def generate(self):
-        return self.generate_by_type(self.text)
+        return self.generate_by_type(self.get_text())
 
 
 ###############################################################################
